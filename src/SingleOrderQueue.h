@@ -8,42 +8,42 @@
  * Basic thread-safe queue implementation with a single item slot.
  */
 class SingleOrderQueue : public virtual OrderQueue {
-  Order order_;
-  cpen333::thread::semaphore producer_;
-  cpen333::thread::semaphore consumer_;
+    Order order_;
+    cpen333::thread::semaphore producer_;
+    cpen333::thread::semaphore consumer_;
 
- public:
-  SingleOrderQueue() :
-      order_(), producer_(1), consumer_(0) {}
+public:
+    SingleOrderQueue() :
+            order_(), producer_(1), consumer_(0) {}
 
-  void add(const Order& order) {
+    void add(const Order &order) {
 
-    //=============================================
-    // TODO: Safely add item to "queue"
-    //    - wait for empty slot
-    //    - fill slot
-    //    - notify others of item availability
-    //=============================================
+        //=============================================
+        // TODO: Safely add item to "queue"
+        //    - wait for empty slot
+        //    - fill slot
+        //    - notify others of item availability
+        //=============================================
 
-    // store next order
-    order_ = order;
+        // store next order
+        order_ = order;
 
-  }
+    }
 
-  Order get() {
+    Order get() {
 
-    //=============================================
-    // TODO: Safely remove item from "queue"
-    //    - wait for slot to be filled
-    //    - remove item
-    //    - notify others of empty slot
-    //=============================================
+        //=============================================
+        // TODO: Safely remove item from "queue"
+        //    - wait for slot to be filled
+        //    - remove item
+        //    - notify others of empty slot
+        //=============================================
 
-    // grab next order
-    Order out = order_;
+        // grab next order
+        Order out = order_;
 
-    return out;
-  }
+        return out;
+    }
 
 };
 
