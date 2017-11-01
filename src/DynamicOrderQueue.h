@@ -24,30 +24,26 @@ public:
             buff_(), mutex_(), cv_() {}
 
     void add(const Order &order) {
+        {
+            std::lock_guard<decltype(mutex_)> lock(mutex_);
+            buff_.push_back(order);
+        }
+        cv_.notify_one();
 
-        //==================================================
-        // TODO: Safely add item to "queue"
-        //    - safely add to end of internal queue
-        //    - notify others of item availability
-        //==================================================
-
-        buff_.push_back(order);
 
     }
 
     Order get() {
-
-        //==================================================
-        // TODO: Safely remove item from "queue"
-        //    - wait until internal queue is non-empty
-        //    - safely acquire item from internal queue
-        //==================================================
-
         // get first item in queue
-        Order out = buff_.front();
-        buff_.pop_front();
+        {
+            std::unique_lock<decltype(mutex_)> lock(mutex_);
+            cv_.wait(lock, [&] () {return !buff_.empty();});
 
-        return out;
+            Order out = buff_.front();
+            buff_.pop_front();
+            return out;
+        }
+
     }
 };
 
