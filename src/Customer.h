@@ -16,6 +16,10 @@ class Customer : public cpen333::thread::thread_object {
     OrderQueue &queue_;
     Menu &menu_;
     int id_;
+    int itemServed_;
+    std::mutex serve_idx_mut_;
+    std::condition_variable cv_;
+
 
 public:
     /**
@@ -25,7 +29,7 @@ public:
      * @param queue queue to place order into
      */
     Customer(int id, Menu &menu, OrderQueue &queue) :
-            id_(id), menu_(menu), queue_(queue) {}
+            id_(id), menu_(menu), queue_(queue), serve_idx_mut_(), itemServed_(0), cv_(){}
 
     /**
      * Unique customer id
@@ -40,11 +44,11 @@ public:
      * @param order order that is complete
      */
     void serve(const Order &order) {
-
-        //==================================================
-        // TODO: Notify main method that order is ready
-        //==================================================
-
+        {
+            std::lock_guard<decltype(serve_idx_mut_)> lock(serve_idx_mut_);
+            ++itemServed_;
+            cv_.notify_one();
+        }
     }
 
     /**
@@ -83,9 +87,11 @@ public:
             queue_.add({id_, meal.id});
         }
 
-        //==================================================
-        // TODO: wait for meals to be served
-        //==================================================
+        {
+            std::mutex mut_;
+            std::unique_lock<decltype(mut_)> lock(mut_);
+            cv_.wait(lock, [&] () {return items == itemServed_;});
+        }
 
         // stay for some time
         std::this_thread::sleep_for(std::chrono::seconds(5));
