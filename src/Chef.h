@@ -45,7 +45,7 @@ public:
         // TODO: Detect when it's time to exit loop
         //==================================================
         Order order = orders_.get();
-        while (true) {
+        while (order != PoisonOrder) {
 
             // process order
             safe_printf("Chef %d starting order {%d,%d}\n", id_, order.customer_id, order.item_id);

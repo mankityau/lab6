@@ -16,6 +16,9 @@ struct Order {
     bool operator!=(const Order &other) const {
         return !(*this == other);
     }
+
 };
+
+const struct Order PoisonOrder = {-1, -1};
 
 #endif //LAB6_ORDER_H

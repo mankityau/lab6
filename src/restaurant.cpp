@@ -5,6 +5,7 @@
 #include "SingleOrderQueue.h"
 #include "CircularOrderQueue.h"
 #include "DynamicOrderQueue.h"
+#include "Order.h"
 
 /**
  * Main function to run the restaurant
@@ -66,6 +67,9 @@ int main() {
 
     // wait for all chefs to leave
     for (auto &chef : chefs) {
+        order_queue.add(PoisonOrder);
+    }
+    for (auto &chef : chefs) {
         chef->join();
     }
 
@@ -74,6 +78,9 @@ int main() {
     //==================================================
 
     // wait for all servers to leave
+    for (auto &server : servers){
+        serve_queue.add(PoisonOrder);
+    }
     for (auto &server : servers) {
         server->join();
     }

@@ -50,7 +50,7 @@ public:
         // TODO: Detect when it's time to exit loop
         //==================================================
         Order order = queue_.get();
-        while (true) {
+        while (order != PoisonOrder) {
 
             // serve order
             safe_printf("Server %d serving {%d,%d}\n", id_, order.customer_id, order.item_id);
@@ -66,7 +66,6 @@ public:
             // next order
             order = queue_.get();
         }
-
         safe_printf("Server %d done.\n", id_);
 
         return 0;
