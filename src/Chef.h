@@ -41,9 +41,6 @@ public:
 
         safe_printf("Chef %d started\n", id_);
 
-        //==================================================
-        // TODO: Detect when it's time to exit loop
-        //==================================================
         Order order = orders_.get();
         while (order != PoisonOrder) {
 

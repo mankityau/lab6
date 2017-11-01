@@ -46,9 +46,6 @@ public:
 
         safe_printf("Server %d started\n", id_);
 
-        //==================================================
-        // TODO: Detect when it's time to exit loop
-        //==================================================
         Order order = queue_.get();
         while (order != PoisonOrder) {
 

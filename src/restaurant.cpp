@@ -61,10 +61,6 @@ int main() {
         customer->join();
     }
 
-    //==================================================
-    // TODO: Signal all chefs to leave
-    //==================================================
-
     // wait for all chefs to leave
     for (auto &chef : chefs) {
         order_queue.add(PoisonOrder);
@@ -72,10 +68,6 @@ int main() {
     for (auto &chef : chefs) {
         chef->join();
     }
-
-    //==================================================
-    // TODO: Signal all servers to leave
-    //==================================================
 
     // wait for all servers to leave
     for (auto &server : servers){
