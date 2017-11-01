@@ -30,8 +30,8 @@ int main() {
     //    - CircularOrderQueue
     //    - DynamicOrderQueue
     //============================================
-    SingleOrderQueue order_queue;
-    SingleOrderQueue serve_queue;
+    DynamicOrderQueue order_queue;
+    CircularOrderQueue serve_queue;
 
     for (int i = 0; i < nchefs; ++i) {
         chefs.push_back(new Chef(i, order_queue, serve_queue));
