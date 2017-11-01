@@ -32,39 +32,30 @@ public:
             pmutex_(), cmutex_(), pidx_(0), cidx_(0) {}
 
     void add(const Order &order) {
-
-        //==================================================
-        // TODO: Safely add item to "queue"
-        //    - wait for empty slot
-        //    - safely acquire and increment producer index
-        //    - fill slot
-        //    - notify others of item availability
-        //==================================================
-        int pidx;
-        pidx = pidx_;
-        // update producer index
-        pidx_ = (pidx_ + 1) % CIRCULAR_BUFF_SIZE;
-        buff_[pidx] = order;
-
+        producer_.wait();
+        {
+            std::lock_guard<decltype(pmutex_)> lock(pmutex_);
+            int pidx;
+            pidx = pidx_;
+            // update producer index
+            pidx_ = (pidx_ + 1) % CIRCULAR_BUFF_SIZE;
+            buff_[pidx] = order;
+        }
+        consumer_.notify();
     }
 
     Order get() {
-
-        //==================================================
-        // TODO: Safely remove item from "queue"
-        //    - wait for next filled slot
-        //    - safely acquire and increment consumer index
-        //    - remove item from slot
-        //    - notify others of slot availability
-        //==================================================
-
-        int cidx;
-        cidx = cidx_;
-        // update consumer index
-        cidx_ = (cidx_ + 1) % CIRCULAR_BUFF_SIZE;
-        Order out = buff_[cidx];
-
-        return out;
+        consumer_.wait();
+        {
+            std::lock_guard<decltype(cmutex_)> lock(cmutex_);
+            int cidx;
+            cidx = cidx_;
+            // update consumer index
+            cidx_ = (cidx_ + 1) % CIRCULAR_BUFF_SIZE;
+            Order out = buff_[cidx];
+            producer_.notify();
+            return out;
+        }
     }
 
 };
