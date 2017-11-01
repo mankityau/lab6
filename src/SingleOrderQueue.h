@@ -17,30 +17,17 @@ public:
             order_(), producer_(1), consumer_(0) {}
 
     void add(const Order &order) {
-
-        //=============================================
-        // TODO: Safely add item to "queue"
-        //    - wait for empty slot
-        //    - fill slot
-        //    - notify others of item availability
-        //=============================================
-
         // store next order
+        producer_.wait();
         order_ = order;
-
+        consumer_.notify();
     }
 
     Order get() {
-
-        //=============================================
-        // TODO: Safely remove item from "queue"
-        //    - wait for slot to be filled
-        //    - remove item
-        //    - notify others of empty slot
-        //=============================================
-
         // grab next order
+        consumer_.wait();
         Order out = order_;
+        producer_.notify();
 
         return out;
     }
